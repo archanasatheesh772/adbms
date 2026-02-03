@@ -1,0 +1,262 @@
+mca@mca-HP-Pro-Tower-280-G9-E-PCI-Desktop-PC:~$ sudo mysql
+[sudo] password for mca: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 8
+Server version: 8.0.45-0ubuntu0.22.04.1 (Ubuntu)
+
+Copyright (c) 2000, 2026, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> create database xyz;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use xyz;
+Database changed
+mysql> create table persons(person_id int primary key,name varchar(50) not null,aadhar varchar(12) not null unique,age int check(age>18));
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> create table orders(order_id int primary key,order_number int not null,foregin key(person_id references persons(person_id));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'key(person_id references persons(person_id))' at line 1
+mysql> create table orders(order_id int primary key,order_number int not null,foreign key(person_id references persons(person_id));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'references persons(person_id))' at line 1
+mysql> create table orders(order_id int primary key,order_number int not null,foreign key(person_id reference persons(person_id));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'reference persons(person_id))' at line 1
+mysql> create table orders(order_id int primary key,order_number int not null,person_id int,foreign key(person_id)references persons(person_id));
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> DESC persons;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| person_id | int         | NO   | PRI | NULL    |       |
+| name      | varchar(50) | NO   |     | NULL    |       |
+| aadhar    | varchar(12) | NO   | UNI | NULL    |       |
+| age       | int         | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+4 rows in set (0.02 sec)
+
+mysql> DESC orders;
++--------------+------+------+-----+---------+-------+
+| Field        | Type | Null | Key | Default | Extra |
++--------------+------+------+-----+---------+-------+
+| order_id     | int  | NO   | PRI | NULL    |       |
+| order_number | int  | NO   |     | NULL    |       |
+| person_id    | int  | YES  | MUL | NULL    |       |
++--------------+------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> alter table employee add primary key(emp_no);
+ERROR 1146 (42S02): Table 'xyz.employee' doesn't exist
+mysql> create table employee(employee_no int(20),employee_name varchar(20),place varchar(50),phone_number int(10),department_)name varchar(50),job_id int(20),salary int(20));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')name varchar(50),job_id int(20),salary int(20))' at line 1
+mysql> create table employee(employee_no int(20),employee_name varchar(20),place varchar(50),phone_number int(10),department_name varchar(50),job_id int(20),salary int(20));
+Query OK, 0 rows affected, 4 warnings (0.05 sec)
+
+mysql> create table department(department_no int(20),employee_no int(20),employee_name varchar(20));
+Query OK, 0 rows affected, 2 warnings (0.04 sec)
+
+mysql> alter table employee add primary key(employee_no);
+Query OK, 0 rows affected (0.09 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table department add primary key (department_no);
+Query OK, 0 rows affected (0.08 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table employee add foreign key(dept_no) references department(dept_no) on delete cascade;
+ERROR 1072 (42000): Key column 'dept_no' doesn't exist in table
+mysql> alter table employee add foreign key(dept_no) references department(department_no) on delete cascade;
+ERROR 1072 (42000): Key column 'dept_no' doesn't exist in table
+mysql> alter table employee add foreign key(department_no) references department(department_no) on delete cascade;
+ERROR 1072 (42000): Key column 'department_no' doesn't exist in table
+mysql> alter table employee add foreign key(dept_no) references department(dept_no) on delete cascade;
+ERROR 1072 (42000): Key column 'dept_no' doesn't exist in table
+mysql> alter table employee add foreign key(dept_no) references department(dept_no) on delete cascade;
+ERROR 1072 (42000): Key column 'dept_no' doesn't exist in table
+mysql> alter table employee add department_no;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+mysql> DESC employee;
++-----------------+-------------+------+-----+---------+-------+
+| Field           | Type        | Null | Key | Default | Extra |
++-----------------+-------------+------+-----+---------+-------+
+| employee_no     | int         | NO   | PRI | NULL    |       |
+| employee_name   | varchar(20) | YES  |     | NULL    |       |
+| place           | varchar(50) | YES  |     | NULL    |       |
+| phone_number    | int         | YES  |     | NULL    |       |
+| department_name | varchar(50) | YES  |     | NULL    |       |
+| job_id          | int         | YES  |     | NULL    |       |
+| salary          | int         | YES  |     | NULL    |       |
++-----------------+-------------+------+-----+---------+-------+
+7 rows in set (0.00 sec)
+
+mysql> DESC department;
++---------------+-------------+------+-----+---------+-------+
+| Field         | Type        | Null | Key | Default | Extra |
++---------------+-------------+------+-----+---------+-------+
+| department_no | int         | NO   | PRI | NULL    |       |
+| employee_no   | int         | YES  |     | NULL    |       |
+| employee_name | varchar(20) | YES  |     | NULL    |       |
++---------------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> alter table employee add department_no int(20);
+Query OK, 0 rows affected, 1 warning (0.07 sec)
+Records: 0  Duplicates: 0  Warnings: 1
+
+mysql> alter table employee add foreign key(department_no) references department(department_no) on delete cascade;
+Query OK, 0 rows affected (0.09 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table oders drop primary key;
+ERROR 1146 (42S02): Table 'xyz.oders' doesn't exist
+mysql> alter table orders drop primary key;
+Query OK, 0 rows affected (0.11 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> DESC orders;
++--------------+------+------+-----+---------+-------+
+| Field        | Type | Null | Key | Default | Extra |
++--------------+------+------+-----+---------+-------+
+| order_id     | int  | NO   |     | NULL    |       |
+| order_number | int  | NO   |     | NULL    |       |
+| person_id    | int  | YES  | MUL | NULL    |       |
++--------------+------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> insert into department values('d1','hr');
+ERROR 1136 (21S01): Column count doesn't match value count at row 1
+mysql> DESC department;
++---------------+-------------+------+-----+---------+-------+
+| Field         | Type        | Null | Key | Default | Extra |
++---------------+-------------+------+-----+---------+-------+
+| department_no | int         | NO   | PRI | NULL    |       |
+| employee_no   | int         | YES  |     | NULL    |       |
+| employee_name | varchar(20) | YES  |     | NULL    |       |
++---------------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> DESC employee;
++-----------------+-------------+------+-----+---------+-------+
+| Field           | Type        | Null | Key | Default | Extra |
++-----------------+-------------+------+-----+---------+-------+
+| employee_no     | int         | NO   | PRI | NULL    |       |
+| employee_name   | varchar(20) | YES  |     | NULL    |       |
+| place           | varchar(50) | YES  |     | NULL    |       |
+| phone_number    | int         | YES  |     | NULL    |       |
+| department_name | varchar(50) | YES  |     | NULL    |       |
+| job_id          | int         | YES  |     | NULL    |       |
+| salary          | int         | YES  |     | NULL    |       |
+| department_no   | int         | YES  | MUL | NULL    |       |
++-----------------+-------------+------+-----+---------+-------+
+8 rows in set (0.00 sec)
+
+mysql> alter table department add department_name varchar(20);
+Query OK, 0 rows affected (0.08 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> insert into department values('d1','hr');
+ERROR 1136 (21S01): Column count doesn't match value count at row 1
+mysql> insert into department values('d1',1,'hr');
+ERROR 1136 (21S01): Column count doesn't match value count at row 1
+mysql> insert into department values('d1',1,'hr');
+ERROR 1136 (21S01): Column count doesn't match value count at row 1
+mysql> insert into employee values(1,'anu','ktm','9865741236','manager',101,5000,10);
+ERROR 1264 (22003): Out of range value for column 'phone_number' at row 1
+mysql> insert into employee values(1,'manu','ktm','9868745698','co1',100,50000,10);
+ERROR 1264 (22003): Out of range value for column 'phone_number' at row 1
+mysql> create table employees(emp_id int primary key,emp_name varchar(50),designation varchar(20),dept_no int(20),salary int(20),phn int(10));
+Query OK, 0 rows affected, 3 warnings (0.04 sec)
+
+mysql> DESC employees;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| emp_id      | int         | NO   | PRI | NULL    |       |
+| emp_name    | varchar(50) | YES  |     | NULL    |       |
+| designation | varchar(20) | YES  |     | NULL    |       |
+| dept_no     | int         | YES  |     | NULL    |       |
+| salary      | int         | YES  |     | NULL    |       |
+| phn         | int         | YES  |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+mysql> insert into employees values(1,"manu","manager",100,1000,9869748596);
+ERROR 1264 (22003): Out of range value for column 'phn' at row 1
+mysql> insert into employees values(1,"manu","manager",100,1000,98697485);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into employees values(2,"malu","hr",101,1001,98607485);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into employees values(3,"malavika","analyst",102,1002,98608485);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> insert into employees values(4,"malikka","teacher",103,1003,98608785);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> DESC employees;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| emp_id      | int         | NO   | PRI | NULL    |       |
+| emp_name    | varchar(50) | YES  |     | NULL    |       |
+| designation | varchar(20) | YES  |     | NULL    |       |
+| dept_no     | int         | YES  |     | NULL    |       |
+| salary      | int         | YES  |     | NULL    |       |
+| phn         | int         | YES  |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)
+
+mysql> select * from table employees;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'table employees' at line 1
+mysql> select * from employees;
++--------+----------+-------------+---------+--------+----------+
+| emp_id | emp_name | designation | dept_no | salary | phn      |
++--------+----------+-------------+---------+--------+----------+
+|      1 | manu     | manager     |     100 |   1000 | 98697485 |
+|      2 | malu     | hr          |     101 |   1001 | 98607485 |
+|      3 | malavika | analyst     |     102 |   1002 | 98608485 |
+|      4 | malikka  | teacher     |     103 |   1003 | 98608785 |
++--------+----------+-------------+---------+--------+----------+
+4 rows in set (0.00 sec)
+
+mysql> create table deptmt(dep_no int(20),dep_name varchar(20));
+Query OK, 0 rows affected, 1 warning (0.05 sec)
+
+mysql> DESC deptmt;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| dep_no   | int         | YES  |     | NULL    |       |
+| dep_name | varchar(20) | YES  |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+2 rows in set (0.01 sec)
+
+mysql> insert into deptmt values(1,"co1");
+Query OK, 1 row affected (0.03 sec)
+
+mysql> insert into deptmt values(2,"co2");
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into deptmt values(3,"co3");
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into deptmt values(4,"co4");
+Query OK, 1 row affected (0.02 sec)
+
+mysql> select * from deptmt;
++--------+----------+
+| dep_no | dep_name |
++--------+----------+
+|      1 | co1      |
+|      2 | co2      |
+|      3 | co3      |
+|      4 | co4      |
++--------+----------+
+4 rows in set (0.00 sec)
+
