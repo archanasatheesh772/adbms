@@ -1,0 +1,43 @@
+mysql> select emp_id,emp_name from employees where dep_no=1;
+ERROR 1054 (42S22): Unknown column 'dep_no' in 'where clause'
+mysql> select emp_id,emp_name from employees where dep_no = 1;
+ERROR 1054 (42S22): Unknown column 'dep_no' in 'where clause'
+mysql> select emp_id, emp_name from employees where dep_no = 1;
+ERROR 1054 (42S22): Unknown column 'dep_no' in 'where clause'
+mysql> select emp_id,emp_name,designation,dept_no,salary from employees order by salary desc;
++--------+----------+-------------+---------+--------+
+| emp_id | emp_name | designation | dept_no | salary |
++--------+----------+-------------+---------+--------+
+|      4 | malikka  | teacher     |     103 |   1003 |
+|      3 | malavika | analyst     |     102 |   1002 |
+|      2 | malu     | hr          |     101 |   1001 |
+|      1 | manu     | manager     |     100 |   1000 |
++--------+----------+-------------+---------+--------+
+4 rows in set (0.00 sec)
+
+mysql> select emp_id,emp_name from employees where salary between 1000 and 1005;
++--------+----------+
+| emp_id | emp_name |
++--------+----------+
+|      1 | manu     |
+|      2 | malu     |
+|      3 | malavika |
+|      4 | malikka  |
++--------+----------+
+4 rows in set (0.00 sec)
+
+mysql> select distinct designation from employees;
++-------------+
+| designation |
++-------------+
+| manager     |
+| hr          |
+| analyst     |
+| teacher     |
++-------------+
+4 rows in set (0.02 sec)
+
+mysql> update employees set salary=4500 where designation = "manager";
+Query OK, 1 row affected (0.02 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
