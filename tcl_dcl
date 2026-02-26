@@ -1,0 +1,217 @@
+mca@mca-HP-Pro-Tower-280-G9-E-PCI-Desktop-PC:~$ sudo mysql
+[sudo] password for mca: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 10
+Server version: 8.0.45-0ubuntu0.22.04.1 (Ubuntu)
+
+Copyright (c) 2000, 2026, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> create database order_dbs;
+Query OK, 1 row affected (0.03 sec)
+
+mysql> create table orders_details(oder_id int primary key,product_name varchar(50),order_no int,order_date date);
+ERROR 1046 (3D000): No database selected
+mysql> use oders_dbs;
+ERROR 1049 (42000): Unknown database 'oders_dbs'
+mysql> use order_dbs;
+Database changed
+mysql> create table orders_details(oder_id int primary key,product_name varchar(50),order_no int,order_date date);
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> insert into oders_details values(1,'laptop',234,'2000-03-02'),(2,'desktop',456,'2001-02-02'),(3,'keyboard',457,'2000-03-02'),(4,'mouse',463,'2001-06-09'),(5,'antivirus',501,'2004-04-04');
+ERROR 1146 (42S02): Table 'order_dbs.oders_details' doesn't exist
+mysql> ^C
+mysql> insert into oders_details values(1,'laptop',234,'2000-03-02');
+ERROR 1146 (42S02): Table 'order_dbs.oders_details' doesn't exist
+mysql> insert into orders_details values(1,'laptop',234,'2000-03-02');
+Query OK, 1 row affected (0.03 sec)
+
+mysql> insert into oders_details values (2,'desktop',456,'2001-02-02'),(3,'keyboard',457,'2000-03-02'),(4,'mouse',463,'2001-06-09'),(5,'antivirus',501,'2004-04-04');
+ERROR 1146 (42S02): Table 'order_dbs.oders_details' doesn't exist
+mysql> insert into orders_details values (2,'desktop',456,'2001-02-02'),(3,'keyboard',457,'2000-03-02'),(4,'mouse',463,'2001-06-09'),(5,'antivirus',501,'2004-04-04');
+Query OK, 4 rows affected (0.03 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> start transaction;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> insert into orders_details values(6,'printer'600,'2005-08-02'),(7,'scanner',700,'2005-03-12');
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '600,'2005-08-02'),(7,'scanner',700,'2005-03-12')' at line 1
+mysql> insert into orders_details values(6,'printer'600,'2005-08-02'),(7,'scanner',700,'2005-03-12');
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '600,'2005-08-02'),(7,'scanner',700,'2005-03-12')' at line 1
+mysql> insert into orders_details values(6,'printer'600,'2005-08-02'),(7,'scanner',700,'2005-03-12');
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '600,'2005-08-02'),(7,'scanner',700,'2005-03-12')' at line 1
+mysql> insert into orders_details values(6,'printer',600,'2005-08-02'),(7,'scanner',700,'2005-03-12');
+Query OK, 2 rows affected (0.00 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> select * from orders_details;
++---------+--------------+----------+------------+
+| oder_id | product_name | order_no | order_date |
++---------+--------------+----------+------------+
+|       1 | laptop       |      234 | 2000-03-02 |
+|       2 | desktop      |      456 | 2001-02-02 |
+|       3 | keyboard     |      457 | 2000-03-02 |
+|       4 | mouse        |      463 | 2001-06-09 |
+|       5 | antivirus    |      501 | 2004-04-04 |
+|       6 | printer      |      600 | 2005-08-02 |
+|       7 | scanner      |      700 | 2005-03-12 |
++---------+--------------+----------+------------+
+7 rows in set (0.00 sec)
+
+mysql> roolback;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'roolback' at line 1
+mysql> rollback;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> select *from orders_details;
++---------+--------------+----------+------------+
+| oder_id | product_name | order_no | order_date |
++---------+--------------+----------+------------+
+|       1 | laptop       |      234 | 2000-03-02 |
+|       2 | desktop      |      456 | 2001-02-02 |
+|       3 | keyboard     |      457 | 2000-03-02 |
+|       4 | mouse        |      463 | 2001-06-09 |
+|       5 | antivirus    |      501 | 2004-04-04 |
++---------+--------------+----------+------------+
+5 rows in set (0.00 sec)
+
+mysql> start transaction;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> delete from oders_details where oder_id in (4,5);
+ERROR 1146 (42S02): Table 'order_dbs.oders_details' doesn't exist
+mysql> delete from orders_details where oder_id in (4,5);
+Query OK, 2 rows affected (0.01 sec)
+
+mysql> select * from orders_details;
++---------+--------------+----------+------------+
+| oder_id | product_name | order_no | order_date |
++---------+--------------+----------+------------+
+|       1 | laptop       |      234 | 2000-03-02 |
+|       2 | desktop      |      456 | 2001-02-02 |
+|       3 | keyboard     |      457 | 2000-03-02 |
++---------+--------------+----------+------------+
+3 rows in set (0.00 sec)
+
+mysql> commit;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> select * from orders_details;
++---------+--------------+----------+------------+
+| oder_id | product_name | order_no | order_date |
++---------+--------------+----------+------------+
+|       1 | laptop       |      234 | 2000-03-02 |
+|       2 | desktop      |      456 | 2001-02-02 |
+|       3 | keyboard     |      457 | 2000-03-02 |
++---------+--------------+----------+------------+
+3 rows in set (0.00 sec)
+
+mysql> set autocommit = 0;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> savepoint svp_update;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> update orders_details set product_name = 'gaming_keyboard' where order_no = 457;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> inser into orders_details values(8,'webcam',700,'2004-01-01'),(9,'speaker',701,2004-02-02');
+    '> savepoint svp_delete;
+    '> ^C
+mysql> insert into orders_details values(8,'webcam',700,'2004-01-01'),(9,'speaker',701,2004-02-02');
+    '> ^C
+mysql> insert into orders_details values(8,'webcam',700,'2004-01-01'),(9,'speaker',701,'2004-02-02');
+Query OK, 2 rows affected (0.00 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> savepoint svp_delete;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> delete from order_details where product_name = 'desktop';
+ERROR 1146 (42S02): Table 'order_dbs.order_details' doesn't exist
+mysql> delete from orders_details where product_name = 'desktop';
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from oders_details;
+ERROR 1146 (42S02): Table 'order_dbs.oders_details' doesn't exist
+mysql> select * from orders_details;
++---------+-----------------+----------+------------+
+| oder_id | product_name    | order_no | order_date |
++---------+-----------------+----------+------------+
+|       1 | laptop          |      234 | 2000-03-02 |
+|       3 | gaming_keyboard |      457 | 2000-03-02 |
+|       8 | webcam          |      700 | 2004-01-01 |
+|       9 | speaker         |      701 | 2004-02-02 |
++---------+-----------------+----------+------------+
+4 rows in set (0.00 sec)
+
+mysql> rollback to svp_delete;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from orders_details;
++---------+-----------------+----------+------------+
+| oder_id | product_name    | order_no | order_date |
++---------+-----------------+----------+------------+
+|       1 | laptop          |      234 | 2000-03-02 |
+|       2 | desktop         |      456 | 2001-02-02 |
+|       3 | gaming_keyboard |      457 | 2000-03-02 |
+|       8 | webcam          |      700 | 2004-01-01 |
+|       9 | speaker         |      701 | 2004-02-02 |
++---------+-----------------+----------+------------+
+5 rows in set (0.00 sec)
+
+mysql> commit;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> set autocommit = 1;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> create user 'student'@'localhost' identified by 'pass123';
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> grant all privileges on orders_details to 'student'@'localhost';
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> show grants for 'student1'@'localhost';
+ERROR 1141 (42000): There is no such grant defined for user 'student1' on host 'localhost'
+mysql> show grants for 'student'@'localhost';
++-------------------------------------------------------------------------------+
+| Grants for student@localhost                                                  |
++-------------------------------------------------------------------------------+
+| GRANT USAGE ON *.* TO `student`@`localhost`                                   |
+| GRANT ALL PRIVILEGES ON `order_dbs`.`orders_details` TO `student`@`localhost` |
++-------------------------------------------------------------------------------+
+2 rows in set (0.00 sec)
+
+mysql> revoke delete,update on orders_details from 'student'@'localhost';
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> show grants for 'student'@'localhost';
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Grants for student@localhost                                                                                                                           |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| GRANT USAGE ON *.* TO `student`@`localhost`                                                                                                            |
+| GRANT SELECT, INSERT, CREATE, DROP, REFERENCES, INDEX, ALTER, CREATE VIEW, SHOW VIEW, TRIGGER ON `order_dbs`.`orders_details` TO `student`@`localhost` |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+2 rows in set (0.00 sec)
+
+mysql> select * from orders_details;
++---------+-----------------+----------+------------+
+| oder_id | product_name    | order_no | order_date |
++---------+-----------------+----------+------------+
+|       1 | laptop          |      234 | 2000-03-02 |
+|       2 | desktop         |      456 | 2001-02-02 |
+|       3 | gaming_keyboard |      457 | 2000-03-02 |
+|       8 | webcam          |      700 | 2004-01-01 |
+|       9 | speaker         |      701 | 2004-02-02 |
++---------+-----------------+----------+------------+
+5 rows in set (0.00 sec)
+
